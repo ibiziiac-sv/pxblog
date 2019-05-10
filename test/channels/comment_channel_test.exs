@@ -1,6 +1,7 @@
 defmodule PxblogWeb.CommentChannelTest do
   use PxblogWeb.ChannelCase
 
+  alias PxblogWeb.UserSocket
   alias PxblogWeb.CommentChannel
   import Pxblog.Factory
 
@@ -10,7 +11,7 @@ defmodule PxblogWeb.CommentChannelTest do
     comment = insert(:comment, post: post, user: user)
 
     {:ok, _, socket} =
-      socket("user_id", %{user: user.id})
+      socket(UserSocket, "user_id", %{user: user.id})
       |> subscribe_and_join(CommentChannel, "comments:#{post.id}")
 
     {:ok, socket: socket, post: post, comment: comment}

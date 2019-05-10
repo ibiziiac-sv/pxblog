@@ -17,7 +17,7 @@ defmodule PxblogWeb.PostController do
   end
 
   def new(conn, _params) do
-    conn = add_breadcrumb(conn, name: 'New Post', url: post_path(conn, :new))
+    conn = add_breadcrumb(conn, name: 'New Post', url: Routes.post_path(conn, :new))
     changeset =
       conn.assigns[:current_user]
       |> build_assoc(:posts)
@@ -34,7 +34,7 @@ defmodule PxblogWeb.PostController do
       {:ok, _post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
-        |> redirect(to: post_path(conn, :index))
+        |> redirect(to: Routes.post_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -44,7 +44,7 @@ defmodule PxblogWeb.PostController do
     conn = add_breadcrumb(
       conn,
       name: conn.assigns[:post].title,
-      url: post_path(conn, :show, conn.assigns[:post])
+      url: Routes.post_path(conn, :show, conn.assigns[:post])
     )
     comment_changeset = conn.assigns[:post]
       |> build_assoc(:comments)
@@ -60,7 +60,7 @@ defmodule PxblogWeb.PostController do
     conn = add_breadcrumb(
       conn,
       name: conn.assigns[:post].title,
-      url: post_path(conn, :show, conn.assigns[:post])
+      url: Routes.post_path(conn, :show, conn.assigns[:post])
     )
     changeset = Post.changeset(conn.assigns[:post])
     render(conn, "edit.html", post: conn.assigns[:post], changeset: changeset)
@@ -72,7 +72,7 @@ defmodule PxblogWeb.PostController do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post updated successfully.")
-        |> redirect(to: post_path(conn, :show, post))
+        |> redirect(to: Routes.post_path(conn, :show, post))
       {:error, changeset} ->
         render(conn, "edit.html", post: conn.assigns[:post], changeset: changeset)
     end
@@ -84,6 +84,6 @@ defmodule PxblogWeb.PostController do
     Repo.delete!(conn.assigns[:post])
     conn
     |> put_flash(:info, "Post deleted successfully.")
-    |> redirect(to: post_path(conn, :index))
+    |> redirect(to: Routes.post_path(conn, :index))
   end
 end

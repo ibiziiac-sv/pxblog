@@ -25,6 +25,7 @@ config :logger, :console,
 config :phoenix, :template_engines,
   slim: PhoenixSlime.Engine,
   slime: PhoenixSlime.Engine
+config :phoenix, :json_library, Jason
 
 config :canary, repo: Pxblog.Repo
 config :canary, unauthorized_handler: {PxblogWeb.Helpers.AuthorizationHelpers, :handle_unauthorized}

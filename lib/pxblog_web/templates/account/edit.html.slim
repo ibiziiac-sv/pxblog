@@ -1,4 +1,4 @@
-= form_for @changeset, account_path(@conn, :update, @user), fn f ->
+= form_for @changeset, Routes.account_path(@conn, :update, @user), fn f ->
   = if @changeset.action do 
     div class="alert alert-danger alert-dismissable"
       a href="#" class="close" data-dismiss="alert" aria-label="close" &times;
@@ -43,4 +43,4 @@
           = submit "Update Account", class: "btn btn-primary"
 div.account-links
  | Unhappy? 
- = link "Cancel my account", to: account_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"]
+ = link "Cancel my account", to: Routes.account_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"]

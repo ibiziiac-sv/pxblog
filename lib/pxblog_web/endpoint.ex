@@ -1,7 +1,8 @@
 defmodule PxblogWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :pxblog
 
-  socket "/socket", PxblogWeb.UserSocket
+  socket "/socket", PxblogWeb.UserSocket,
+    websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -25,7 +26,7 @@ defmodule PxblogWeb.Endpoint do
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    json_decoder: Poison
+    json_decoder: Jason
 
   plug Plug.MethodOverride
   plug Plug.Head

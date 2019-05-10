@@ -19,7 +19,7 @@ defmodule Pxblog.Factory do
       email: sequence(:email, &"test#{&1}@test.com"),
       password: "test1234",
       password_confirmation: "test1234",
-      encrypted_password: Comeonin.Bcrypt.hashpwsalt("test1234"),
+      encrypted_password: Bcrypt.hash_pwd_salt("test1234"),
       role: build(:role)
     }
   end

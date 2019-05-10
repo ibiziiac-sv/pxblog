@@ -8,15 +8,15 @@ input type="hidden" id="post-id" value="#{@post.id}"
     .pull-right
       div class="btn-toolbar" role="toolbar"
         div class="btn-group"
-          = link to: post_path(@conn, :index), class: "btn btn-default btn-xs", aria: [label: "Left Align"] do
+          = link to: Routes.post_path(@conn, :index), class: "btn btn-default btn-xs", aria: [label: "Left Align"] do
             i class="glyphicon glyphicon-chevron-left" 
             | &nbsp;Back
           = if @conn.assigns[:current_user] |> can?(:edit, @post) do
-            = link to: post_path(@conn, :edit, @post), class: "btn btn-default btn-xs", aria: [label: "Center Align"] do
+            = link to: Routes.post_path(@conn, :edit, @post), class: "btn btn-default btn-xs", aria: [label: "Center Align"] do
               i class="glyphicon glyphicon-pencil" 
               | &nbsp;Edit
           = if @conn.assigns[:current_user] |> can?(:delete, @post) do
-            = link to: post_path(@conn, :delete, @post), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-default btn-xs", aria: [label: "Justify"] do
+            = link to: Routes.post_path(@conn, :delete, @post), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-default btn-xs", aria: [label: "Justify"] do
               i class="glyphicon glyphicon-remove" 
               | &nbsp;Delete
 
@@ -24,11 +24,11 @@ div#post-content
   = markdown(@post.body)
 hr
 = if @conn.assigns[:current_user] |> can?(:create, Pxblog.Comment) do
-  = render PxblogWeb.CommentView, "form.html", changeset: @comment_changeset, action: post_path(@conn, :show, @post)
+  = render PxblogWeb.CommentView, "form.html", changeset: @comment_changeset, action: Routes.post_path(@conn, :show, @post)
 - else
   .alert.alert-info
     | You need to
-    a<> href="#{session_path(@conn, :new)}" Sign in
+    a<> href="#{Routes.session_path(@conn, :new)}" Sign in
     | to be able to add comments.
 
 div#comments class="comments"

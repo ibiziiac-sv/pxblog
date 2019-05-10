@@ -4,7 +4,7 @@ div#users
       h1 Manage users
     .col-lg-2
       .pull-right
-        a href="#{user_path(@conn, :new)}" class="btn btn-default" aria-label="Center Align"
+        a href="#{Routes.user_path(@conn, :new)}" class="btn btn-default btn-xs" aria-label="Center Align"
           i> class="glyphicon glyphicon-plus"
           | New User
 
@@ -24,6 +24,6 @@ div#users
             td = user.role.name
 
             td.text-right.table-actions
-              = link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs"
-              span< = link "Delete", to: user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs"
+              = link "Edit", to: Routes.user_path(@conn, :edit, user), class: "btn btn-default btn-xs"
+              span< = link "Delete", to: Routes.user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs"
       
