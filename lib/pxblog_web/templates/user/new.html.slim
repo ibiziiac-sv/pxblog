@@ -1,6 +1,7 @@
 h2 New user
 
-= render "form.html", changeset: @changeset,
-                      action: user_path(@conn, :create),
-                      roles: @roles,
-                      conn: @conn
+= render "form.html",
+         changeset: @changeset,
+         action: Routes.user_path(@conn, :create),
+         roles: @roles,
+         conn: @conn

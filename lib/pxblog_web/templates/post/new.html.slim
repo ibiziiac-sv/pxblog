@@ -1,2 +1,5 @@
 h2 New post
-= render "form.html", changeset: @changeset, action: post_path(@conn, :create), cancel: post_path(@conn, :index)
+= render "form.html",
+         changeset: @changeset,
+         action: Routes.post_path(@conn, :create),
+         cancel: Routes.post_path(@conn, :index)

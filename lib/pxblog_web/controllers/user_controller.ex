@@ -13,7 +13,7 @@ defmodule PxblogWeb.UserController do
   end
 
   def new(conn, _params) do
-    conn = add_breadcrumb(conn, name: 'New User', url: user_path(conn, :new))
+    conn = add_breadcrumb(conn, name: 'New User', url: Routes.user_path(conn, :new))
     roles = Repo.all(Role)
     changeset = User.changeset_with_password(%User{})
     render(conn, "new.html", changeset: changeset, roles: roles)
@@ -27,9 +27,9 @@ defmodule PxblogWeb.UserController do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
+        |> redirect(to: Routes.user_path(conn, :index))
       {:error, changeset} ->
-        conn = add_breadcrumb(conn, name: 'New User', url: user_path(conn, :new))
+        conn = add_breadcrumb(conn, name: 'New User', url: Routes.user_path(conn, :new))
         render(conn, "new.html", changeset: changeset, roles: roles)
     end
   end
@@ -38,7 +38,7 @@ defmodule PxblogWeb.UserController do
     roles = Repo.all(Role)
     user = Repo.get!(User, id)
     changeset = User.changeset(user)
-    conn = add_breadcrumb(conn, name: 'Edit User', url: user_path(conn, :edit, user))
+    conn = add_breadcrumb(conn, name: 'Edit User', url: Routes.user_path(conn, :edit, user))
     render(conn, "edit.html", user: user, changeset: changeset, roles: roles)
   end
 
@@ -46,19 +46,19 @@ defmodule PxblogWeb.UserController do
     roles = Repo.all(Role)
     user = Repo.get!(User, id)
 
-    if is_nil(user_params["password"]) || user_params["password"] == "" do
-      changeset = User.changeset(user, user_params)
-    else
-      changeset = User.changeset_with_password(user, user_params)
-    end
+    changeset = if is_nil(user_params["password"]) || user_params["password"] == "" do
+                  User.changeset(user, user_params)
+                else
+                  User.changeset_with_password(user, user_params)
+                end
 
     case Repo.update(changeset) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :index))
+        |> redirect(to: Routes.user_path(conn, :index))
       {:error, changeset} ->
-        conn = add_breadcrumb(conn, name: 'Edit User', url: user_path(conn, :edit, user))
+        conn = add_breadcrumb(conn, name: 'Edit User', url: Routes.user_path(conn, :edit, user))
         render(conn, "edit.html", user: user, changeset: changeset, roles: roles)
     end
   end
@@ -72,6 +72,6 @@ defmodule PxblogWeb.UserController do
 
     conn
     |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
+    |> redirect(to: Routes.user_path(conn, :index))
   end
 end

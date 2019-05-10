@@ -20,6 +20,6 @@
         .form-group
           .col-md-4 style="margin-top: 10px;"
             = submit "Sign in", class: "btn btn-primary"
-  = link "Sign Up", to: account_path(@conn, :new)
+  = link "Sign Up", to: Routes.account_path(@conn, :new)
   br
-  = link "Forgot your password?", to: recover_password_path(@conn, :recover_password)
+  = link "Forgot your password?", to: Routes.recover_password_path(@conn, :recover_password)

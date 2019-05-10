@@ -6,7 +6,7 @@ defmodule PxblogWeb.AccountController do
   alias Pxblog.Role
   alias PxblogWeb.UserEmail
   alias Pxblog.Mailer
-  import Comeonin.Bcrypt, only: [checkpw: 2, hashpwsalt: 1]
+  import Bcrypt, only: [verify_pass: 2]
 
   plug :authorize_user when action in [:edit, :update, :delete]
   plug :check_current_password when action in [:update]
@@ -15,7 +15,7 @@ defmodule PxblogWeb.AccountController do
   plug :add_breadcrumb, name: 'Home', url: '/'
 
   def new(conn, _params) do
-    conn = add_breadcrumb(conn, name: 'Sign Up', url: account_path(conn, :new))
+    conn = add_breadcrumb(conn, name: 'Sign Up', url: Routes.account_path(conn, :new))
     changeset = User.changeset(%User{})
     render(conn, "new.html", changeset: changeset)
   end
@@ -29,9 +29,9 @@ defmodule PxblogWeb.AccountController do
 
         conn
         |> put_flash(:info, "User created successfully.")
-        |> redirect(to: session_path(conn, :new))
+        |> redirect(to: Routes.session_path(conn, :new))
       {:error, changeset} ->
-        conn = add_breadcrumb(conn, name: 'Sign Up', url: account_path(conn, :new))
+        conn = add_breadcrumb(conn, name: 'Sign Up', url: Routes.account_path(conn, :new))
         render(conn, "new.html", changeset: changeset)
     end
   end
@@ -39,25 +39,25 @@ defmodule PxblogWeb.AccountController do
   def edit(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user)
-    conn = add_breadcrumb(conn, name: 'Edit Account', url: account_path(conn, :edit, user))
+    conn = add_breadcrumb(conn, name: 'Edit Account', url: Routes.account_path(conn, :edit, user))
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Repo.get!(User, id)
-    if is_nil(user_params["password"]) || user_params["password"] == "" do
-      changeset = User.changeset(user, user_params)
-    else
-      changeset = User.changeset_with_password(user, user_params)
-    end
+    changeset = if is_nil(user_params["password"]) || user_params["password"] == "" do
+                  User.changeset(user, user_params)
+                else
+                  User.changeset_with_password(user, user_params)
+                end
 
     case Repo.update(changeset) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: post_path(conn, :index))
+        |> redirect(to: Routes.post_path(conn, :index))
       {:error, changeset} ->
-        conn = add_breadcrumb(conn, name: 'Edit Account', url: account_path(conn, :edit, user))
+        conn = add_breadcrumb(conn, name: 'Edit Account', url: Routes.account_path(conn, :edit, user))
         render(conn, "edit.html", user: user, changeset: changeset)
     end
   end
@@ -66,7 +66,7 @@ defmodule PxblogWeb.AccountController do
     conn = add_breadcrumb(
       conn,
       name: 'Recover Password',
-      url: recover_password_path(conn, :recover_password)
+      url: Routes.recover_password_path(conn, :recover_password)
     )
     changeset = User.changeset_with_password(%User{})
     render(conn, "recover_password.html", changeset: changeset)
@@ -80,11 +80,11 @@ defmodule PxblogWeb.AccountController do
       conn
       |> put_flash(:info, "You will receive an email with instructions on how to" <>
                           " reset your password in a few minutes.")
-      |> redirect(to: session_path(conn, :new))
+      |> redirect(to: Routes.session_path(conn, :new))
     else
       conn
       |> put_flash(:error, "User account not found.")
-      |> redirect(to: recover_password_path(conn, :recover_password))
+      |> redirect(to: Routes.recover_password_path(conn, :recover_password))
     end
   end
 
@@ -93,7 +93,7 @@ defmodule PxblogWeb.AccountController do
     conn = add_breadcrumb(
       conn,
       name: 'Recover Password',
-      url: recover_password_path(conn, :recover_password)
+      url: Routes.recover_password_path(conn, :recover_password)
     )
     changeset = User.changeset_with_password(user)
     render(conn, "reset_password.html", token: token, changeset: User.changeset(user))
@@ -110,12 +110,12 @@ defmodule PxblogWeb.AccountController do
         conn
         |> put_session(:current_user, %{id: user.id, username: user.username, role_id: user.role_id})
         |> put_flash(:info, "Your password has been changed successfully. You are now signed in.")
-        |> redirect(to: post_path(conn, :index))
+        |> redirect(to: Routes.post_path(conn, :index))
       {:error, changeset} ->
         conn = add_breadcrumb(
           conn,
           name: 'Recover Password',
-          url: recover_password_path(conn, :recover_password)
+          url: Routes.recover_password_path(conn, :recover_password)
         )
 
         conn
@@ -134,7 +134,7 @@ defmodule PxblogWeb.AccountController do
     conn
     |> delete_session(:current_user)
     |> put_flash(:info, "Account deleted successfully.")
-    |> redirect(to: post_path(conn, :index))
+    |> redirect(to: Routes.post_path(conn, :index))
   end
 
   defp authorize_user(conn, _) do
@@ -149,12 +149,12 @@ defmodule PxblogWeb.AccountController do
    defp check_current_password(conn, _) do
      user = Repo.get!(User, get_session(conn, :current_user).id)
      password = conn.params["user"]["current_password"]
-    if checkpw(password, user.encrypted_password) do
+    if verify_pass(password, user.encrypted_password) do
       conn
     else
       conn
       |> put_flash(:error, "Invalid current password!")
-      |> redirect(to: account_path(conn, :edit, user))
+      |> redirect(to: Routes.account_path(conn, :edit, user))
       |> halt()
     end
   end
@@ -179,8 +179,8 @@ defmodule PxblogWeb.AccountController do
   end
 
   defp validate_reset_password_token(conn, _) do
-    if conn.params["token"] &&
-       (user = Repo.get_by(User, reset_password_token: conn.params["token"])) do
+    user = Repo.get_by(User, reset_password_token: conn.params["token"])
+    if conn.params["token"] && user do
       # token is considered expired after one hour
       if Timex.diff(NaiveDateTime.utc_now(), user.reset_password_sent_at, :minutes) <= 60 do
         conn
@@ -195,12 +195,12 @@ defmodule PxblogWeb.AccountController do
   defp send_home_with_error(conn, message \\ "Unexpected error.") do
     conn
     |> put_flash(:error, message)
-    |> redirect(to: post_path(conn, :index))
+    |> redirect(to: Routes.post_path(conn, :index))
     |> halt()
   end
 
   defp send_welcome_email(conn, user) do
-    sign_in_url = "#{conn.scheme}://#{conn.host}:#{conn.port}#{session_path(conn, :new)}"
+    sign_in_url = "#{conn.scheme}://#{conn.host}:#{conn.port}#{Routes.session_path(conn, :new)}"
     # put mail sending job in a background task
     Task.Supervisor.start_child Pxblog.MailerTask, fn ->
       UserEmail.send_welcome_email(user, sign_in_url) |> Mailer.deliver
@@ -208,7 +208,7 @@ defmodule PxblogWeb.AccountController do
   end
 
   defp send_reset_password_email(conn, user, token) do
-    reset_path = reset_password_path(conn, :reset_password)
+    reset_path = Routes.reset_password_path(conn, :reset_password)
     port = if conn.port == 80, do: "", else: ":#{conn.port}"
     reset_password_url = "#{conn.scheme}://#{conn.host}#{port}#{reset_path}?token=#{token}"
     # put mail sending job in a background task

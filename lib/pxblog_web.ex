@@ -35,7 +35,7 @@ defmodule Pxblog.Web do
       import Ecto
       import Ecto.Query
 
-      import PxblogWeb.Router.Helpers
+      alias PxblogWeb.Router.Helpers, as: Routes
       import PxblogWeb.Gettext
 
       import Canary.Plugs
@@ -55,7 +55,7 @@ defmodule Pxblog.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import PxblogWeb.Router.Helpers
+      alias PxblogWeb.Router.Helpers, as: Routes
       import PxblogWeb.ErrorHelpers
       import PxblogWeb.Gettext
 

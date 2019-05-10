@@ -10,7 +10,7 @@ defmodule Pxblog.UserTest do
   defp valid_attrs(role) do
     Map.put(@valid_attrs, :role_id, role.id)
   end
-  
+
   setup do
     role = insert(:role)
     {:ok, role: role}
@@ -29,7 +29,7 @@ defmodule Pxblog.UserTest do
   test "encrypted_password value gets set to a hash", %{role: role} do
     attrs = valid_attrs(role)
     changeset = User.changeset_with_password(%User{}, attrs)
-    assert Comeonin.Bcrypt.checkpw(attrs.password, Ecto.Changeset.get_change(changeset, :encrypted_password))
+    assert Bcrypt.verify_pass(attrs.password, Ecto.Changeset.get_change(changeset, :encrypted_password))
   end
 
   test "encrypted_password value does not get set if password is nil" do

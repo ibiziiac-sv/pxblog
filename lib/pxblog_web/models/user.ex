@@ -1,6 +1,6 @@
 defmodule Pxblog.User do
   use Pxblog.Web, :model
-  import Comeonin.Bcrypt, only: [hashpwsalt: 1]
+  import Bcrypt, only: [hash_pwd_salt: 1]
   alias Pxblog.Repo
   alias Pxblog.User
 
@@ -70,7 +70,7 @@ defmodule Pxblog.User do
   defp hash_password(changeset) do
     if password = get_change(changeset, :password) do
       changeset
-      |> put_change(:encrypted_password, hashpwsalt(password))
+      |> put_change(:encrypted_password, hash_pwd_salt(password))
     else
       changeset
     end

@@ -11,7 +11,7 @@ html lang="en"
 
     title Phoenix Tiny Blog
     link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"
-    link rel="stylesheet" href="#{static_path(@conn, "/css/app.css")}"
+    link rel="stylesheet" href="#{Routes.static_path(@conn, "/css/app.css")}"
 
   body
     nav class="navbar navbar-default navbar-static-top navbar-inverse"
@@ -33,23 +33,21 @@ html lang="en"
                   span< class="caret"
                 ul class="dropdown-menu" role="menu"
                   li
-                    = link to: account_path(@conn, :edit, user.id) do
+                    = link to: Routes.account_path(@conn, :edit, user.id) do
                       i> class="glyphicon glyphicon-edit"
                       | Edit account
                   = if user |> can?(:create, Pxblog.User) do
                     li
-                      = link to: user_path(@conn, :index) do
+                      = link to: Routes.user_path(@conn, :index) do
                         i> class="glyphicon glyphicon-cog"
                         | Manage users
                   li
-                    a class="sign-out" href="#"
+                    = link to: Routes.session_path(@conn, :delete, user.id), method: :delete do
                       i> class="glyphicon glyphicon-log-out"
                       | Sign out
-                    span.hidden 
-                      = link "Sign out", to: session_path(@conn, :delete, user.id), method: :delete #, form: [id: "sign-out"]
               - else
                 li
-                  = link to: session_path(@conn, :new) do
+                  = link to: Routes.session_path(@conn, :new) do
                     i> class="glyphicon glyphicon-log-in"
                     | Sign in
     .container
@@ -72,4 +70,4 @@ html lang="en"
       .container
         p class="text-muted" Tiny Blog #{DateTime.utc_now.year}
 
-    script src="#{static_path(@conn, "/js/app.js")}"
+    script src="#{Routes.static_path(@conn, "/js/app.js")}"

@@ -13,9 +13,8 @@ config :pxblog, PxblogWeb.Endpoint,
 
 # Configure your database
 config :pxblog, Pxblog.Repo,
-  adapter: Ecto.Adapters.MySQL,
+  adapter: Ecto.Adapters.Postgres,
   username: System.get_env("DATABASE_USERNAME"),
   password: System.get_env("DATABASE_PASSWORD"),
   database: "pxblog_prod",
-  port: "3306",
-  pool_size: 20
+  pool_size: 10
