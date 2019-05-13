@@ -20,7 +20,7 @@ defmodule PxblogWeb.CommentHelper do
   def create(_params, %{}), do: {:error, "User is not authorized"}
   def create(_params, nil), do: {:error, "User is not authorized"}
 
-  def delete(%{"postId" => post_id, "commentId" => comment_id}, %{assigns: %{user: user_id}}) do
+  def delete(%{"postId" => _post_id, "commentId" => comment_id}, %{assigns: %{user: user_id}}) do
     user = get_user(user_id)
     comment = get_comment(comment_id)
 
@@ -53,15 +53,8 @@ defmodule PxblogWeb.CommentHelper do
 
     case Repo.insert(changeset) do
       {:ok, comment} ->
-        comment = comment |> Repo.preload([:user])
-        response = %{
-          id: comment.id,
-          author: comment.user.username,
-          author_id: comment.user_id,
-          inserted_at: comment.inserted_at
-        }
-        {:ok, Map.merge(%{}, response)}
-      {:error, changeset} ->
+        {:ok, %{ comment_id: comment.id }}
+      {:error, _} ->
         {:error, "User is not authorized"}
     end
   end
