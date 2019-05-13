@@ -37,7 +37,6 @@ defmodule Pxblog.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.10"},
      {:jason, "~> 1.0"},
-     {:phoenix_live_reload, "~> 1.2", only: :dev},
      {:gettext, "~> 0.16.1"},
      {:plug_cowboy, "~> 2.0"},
      {:plug, "~> 1.7"},
@@ -50,6 +49,7 @@ defmodule Pxblog.Mixfile do
      {:timex, "~> 3.5.0"},
      {:phoenix_slime, "~> 0.12"},
      {:breadcrumble, "~> 1.0.4"},
+     {:phoenix_live_reload, "~> 1.2", only: :dev},
      {:mix_test_watch, "~> 0.9", only: :dev, runtime: false},
      {:credo, "~> 1.0.5", only: [:dev, :test], runtime: false}]
   end
@@ -63,6 +63,6 @@ defmodule Pxblog.Mixfile do
   defp aliases do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+     test: ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end

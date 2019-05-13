@@ -16,21 +16,21 @@ defmodule PxblogWeb.CommentHelperTest do
   end
 
   test "creates a comment for a post", %{post: post, socket: socket} do
-    {:ok, comment} = CommentHelper.create(%{
+    {:ok, payload} = CommentHelper.create(%{
       "postId" => post.id,
       "body" => "Some Post"
     }, socket)
-    assert comment
-    assert Repo.get(Comment, comment.id)
+    assert payload
+    assert Repo.get(Comment, payload.comment_id)
   end
 
-  test "deletes a comment when an authorized user", 
+  test "deletes a comment when an authorized user",
        %{post: post, comment: comment, socket: socket} do
     {:ok, comment} = CommentHelper.delete(%{"postId" => post.id, "commentId" => comment.id}, socket)
     refute Repo.get(Comment, comment.id)
   end
 
-  test "does not delete a comment when not an authorized user", 
+  test "does not delete a comment when not an authorized user",
        %{post: post, comment: comment} do
     {:error, message} = CommentHelper.delete(%{"postId" => post.id, "commentId" => comment.id}, %{})
     assert message == "User is not authorized"

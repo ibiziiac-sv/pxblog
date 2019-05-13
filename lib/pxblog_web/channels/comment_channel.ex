@@ -4,14 +4,9 @@ defmodule PxblogWeb.CommentChannel do
   alias Pxblog.Repo
   alias Pxblog.User
   alias Pxblog.Comment
-  import Canada.Can, only: [can?: 3]
 
-  def join("comments:" <> _comment_id, payload, socket) do
-    if authorized?(payload) do
-      {:ok, socket}
-    else
-      {:error, %{reason: "unauthorized"}}
-    end
+  def join("comments:" <> _comment_id, _payload, socket) do
+    {:ok, socket}
   end
 
   # Channels can be used in a request/response fashion
@@ -25,44 +20,11 @@ defmodule PxblogWeb.CommentChannel do
   def handle_in("CREATED_COMMENT", payload, socket) do
     case CommentHelper.create(payload, socket) do
       {:ok, comment} ->
-        broadcast(
-          socket,
-          "CREATED_COMMENT",
-          Map.merge(
-            payload,
-            %{
-              commentId: comment.id,
-              insertedAt: comment.inserted_at,
-              authorId: comment.author_id,
-              author: comment.author
-            }
-          )
-        )
+        broadcast(socket, "CREATED_COMMENT", comment)
         {:noreply, socket}
       {:error, _} ->
         {:noreply, socket}
     end
-  end
-
-  # Intercept CREATED_COMMENT and check delete permission for every receiver
-  intercept ["CREATED_COMMENT"]
-  def handle_out("CREATED_COMMENT", payload, socket) do
-    user_id = if is_nil(socket.assigns[:user]), do: 0, else: socket.assigns[:user]
-    user = Repo.one from u in User, where: u.id == ^user_id, preload: [:role]
-    if user do
-      comment = %Comment{id: payload.commentId, user_id: payload.authorId}
-      push(
-        socket,
-        "CREATED_COMMENT",
-        Map.merge(
-          payload,
-          %{allowedToDelete: user |> can?(:delete, comment) }
-        )
-      )
-    else
-      push socket, "CREATED_COMMENT", payload
-    end
-    {:noreply, socket}
   end
 
   def handle_in("DELETED_COMMENT", payload, socket) do
@@ -75,8 +37,15 @@ defmodule PxblogWeb.CommentChannel do
     end
   end
 
-  # Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
+  # Intercept CREATED_COMMENT and check delete permission for every receiver
+  intercept ["CREATED_COMMENT"]
+  def handle_out("CREATED_COMMENT", payload, socket) do
+    comment = Repo.get!(Comment, payload.comment_id) |> Repo.preload(:user)
+    user_id = if is_nil(socket.assigns[:user]), do: 0, else: socket.assigns[:user]
+    user = Repo.one from u in User, where: u.id == ^user_id, preload: [:role]
+    html = Phoenix.View.render_to_string(PxblogWeb.CommentView, "comment.html", comment: comment, user: user)
+
+    push socket, "CREATED_COMMENT", %{ html: html }
+    {:noreply, socket}
   end
 end

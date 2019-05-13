@@ -1,5 +1,5 @@
 = for breadcrumb_trail <- @breadcrumb_trails do 
-  ol class="breadcrumb"
+  ol.breadcrumb
     - trail_length = Enum.count(breadcrumb_trail)
     = for {breadcrumb, i} <- Enum.with_index(breadcrumb_trail) do 
       li

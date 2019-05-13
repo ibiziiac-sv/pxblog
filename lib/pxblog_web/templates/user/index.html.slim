@@ -1,15 +1,15 @@
 div#users
   .row
-    .col-lg-10
-      h1 Manage users
-    .col-lg-2
+    .col-xs-12
       .pull-right
         a href="#{Routes.user_path(@conn, :new)}" class="btn btn-default btn-xs" aria-label="Center Align"
           i> class="glyphicon glyphicon-plus"
           | New User
 
+  h1 Manage users
+
   div#users-list
-    table class="table table-striped"
+    table.table.table-striped
       thead
         tr 
           th User Name
