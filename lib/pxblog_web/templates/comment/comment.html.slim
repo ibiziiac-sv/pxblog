@@ -1,18 +1,18 @@
 div id="comment-#{@comment.id}" class="media comment" data-comment-id="#{@comment.id}"
-  div class="media-body"
-    h4 class="media-heading"
+  .media-body
+    h4.media-heading
       small> by
-      strong class="comment-author"
+      strong.comment-author
         = @comment.user.username
       small< at #{format_date(@comment.inserted_at)}
 
-      = if @conn.assigns[:current_user] |> can?(:delete, @comment) do 
+      = if @user |> can?(:delete, @comment) do 
         .pull-right
           small
             a< href="#" class="delete" 
               i> class="glyphicon glyphicon-remove"
               | Delete
 
-    div class="comment-body"
+    .comment-body
       = @comment.body
     hr
