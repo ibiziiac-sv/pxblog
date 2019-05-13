@@ -52,7 +52,7 @@ defmodule PxblogWeb.AccountController do
                 end
 
     case Repo.update(changeset) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: Routes.post_path(conn, :index))
@@ -95,7 +95,6 @@ defmodule PxblogWeb.AccountController do
       name: 'Recover Password',
       url: Routes.recover_password_path(conn, :recover_password)
     )
-    changeset = User.changeset_with_password(user)
     render(conn, "reset_password.html", token: token, changeset: User.changeset(user))
   end
 
@@ -192,7 +191,7 @@ defmodule PxblogWeb.AccountController do
     end
   end
 
-  defp send_home_with_error(conn, message \\ "Unexpected error.") do
+  defp send_home_with_error(conn, message) do
     conn
     |> put_flash(:error, message)
     |> redirect(to: Routes.post_path(conn, :index))

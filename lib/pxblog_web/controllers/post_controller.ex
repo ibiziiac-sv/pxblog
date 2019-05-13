@@ -40,7 +40,7 @@ defmodule PxblogWeb.PostController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => _id}) do
     conn = add_breadcrumb(
       conn,
       name: conn.assigns[:post].title,
@@ -56,7 +56,7 @@ defmodule PxblogWeb.PostController do
            comment_changeset: comment_changeset
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(conn, %{"id" => _id}) do
     conn = add_breadcrumb(
       conn,
       name: conn.assigns[:post].title,
@@ -66,7 +66,7 @@ defmodule PxblogWeb.PostController do
     render(conn, "edit.html", post: conn.assigns[:post], changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "post" => post_params}) do
+  def update(conn, %{"id" => _id, "post" => post_params}) do
     changeset = Post.changeset(conn.assigns[:post], post_params)
     case Repo.update(changeset) do
       {:ok, post} ->
@@ -78,7 +78,7 @@ defmodule PxblogWeb.PostController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => _id}) do
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
     Repo.delete!(conn.assigns[:post])

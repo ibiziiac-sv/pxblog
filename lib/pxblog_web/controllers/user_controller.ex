@@ -53,7 +53,7 @@ defmodule PxblogWeb.UserController do
                 end
 
     case Repo.update(changeset) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: Routes.user_path(conn, :index))

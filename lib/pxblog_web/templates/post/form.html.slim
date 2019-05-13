@@ -1,4 +1,4 @@
-= form_for @changeset, @action, fn f -> 
+= form_for @changeset, @action, fn f ->
   = if @changeset.action do 
     .alert.alert-danger.alert-dismissable
       a href="#" class="close" data-dismiss="alert" aria-label="close" &times;
@@ -11,14 +11,9 @@
 
   .form-group
     = label f, :body, class: "control-label"
-    = textarea f, :body, class: "form-control", id: "body-editor"
+    = textarea f, :body, class: "form-control md-editor", id: "body-editor"
     = error_tag f, :body
 
   .form-group
     = submit "Submit", class: "btn btn-primary" 
     a< class="btn btn-default" href="#{@cancel}" role="button" Cancel
-
-link rel="stylesheet" href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"
-script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"
-javascript:
-  var simplemde = new SimpleMDE();

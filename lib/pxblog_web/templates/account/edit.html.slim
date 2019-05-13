@@ -42,6 +42,6 @@
         .form-group.col-md-5
           = submit 'Update Account', class: 'btn btn-primary'
 div.account-links
- | Unhappy?
- '
- = link "Cancel my account", to: Routes.account_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"]
+  | Unhappy?
+  '
+  = link "Cancel my account", to: Routes.account_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"]
