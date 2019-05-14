@@ -1,6 +1,5 @@
 defimpl Canada.Can, for: Atom do
   alias Pxblog.User
-  alias Pxblog.Role
   alias Pxblog.Post
   alias Pxblog.Comment
 
@@ -14,13 +13,12 @@ end
 
 defimpl Canada.Can, for: Pxblog.User do
   alias Pxblog.User
-  alias Pxblog.Role
   alias Pxblog.Post
   alias Pxblog.Comment
-    
+
   # abilities for blog posts
-  def can?(user, action, Post) when action in [:index], do: true
-  def can?(user, action, %Post{}) when action in [:show], do: true
+  def can?(_user, action, Post) when action in [:index], do: true
+  def can?(_user, action, %Post{}) when action in [:show], do: true
   def can?(user, action, Post) when action in [:new, :create] do
     user.role.admin == true
   end
@@ -29,7 +27,7 @@ defimpl Canada.Can, for: Pxblog.User do
   end
 
   # abilities for blog comments
-  def can?(user, action, Comment) when action in [:create], do: true
+  def can?(_user, action, Comment) when action in [:create], do: true
   def can?(user, action, %Comment{ user_id: user_id }) when action in [:delete] do
     user.role.admin || user.id == user_id
   end
@@ -39,5 +37,5 @@ defimpl Canada.Can, for: Pxblog.User do
   def can?(user, _, %User{}), do: user.role.admin
 
   # fall back ability
-  def can?(user, _, _), do: true
+  def can?(_user, _, _), do: true
 end

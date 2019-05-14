@@ -1,4 +1,8 @@
+import * as SimpleMDE from 'simplemde'
+
 $(function() {
-  // Fix bootstrap breaking the links with method delete
-  // $(document).off('click.bs.dropdown.data-api', '.dropdown form');
+  const textarea = $('.md-editor');
+  if (textarea.length > 0) {
+    const simplemde = new SimpleMDE({ element: $('.md-editor')[0] });
+  }
 });

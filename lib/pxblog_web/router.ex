@@ -19,13 +19,12 @@ defmodule PxblogWeb.Router do
 
     get "/", PostController, :index
     resources "/posts", PostController
-    get "/page", PageController, :index
     resources "/users", UserController, only: [:index, :new, :create, :edit, :update, :delete]
     get "/account/recover_password", AccountController, :recover_password, as: :recover_password
     post "/account/recover_password", AccountController, :recover_password, as: :recover_password
     get "/account/reset_password", AccountController, :reset_password, as: :reset_password
     put "/account/reset_password", AccountController, :reset_password, as: :reset_password
-    resources "/account", AccountController, only: [:new, :create, :edit, :update, :delete] 
+    resources "/account", AccountController, only: [:new, :create, :edit, :update, :delete]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
   end
 
